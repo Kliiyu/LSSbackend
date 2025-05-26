@@ -1,12 +1,13 @@
 from fastapi import APIRouter
 from models.item import Item
-from database import db
+from database import db, fix_mongo_ids
 
 router = APIRouter()
 
 @router.get("/items")
 async def get_items():
-    return await db.items.find().to_list(100)
+    items = await db.items.find().to_list(100)
+    return fix_mongo_ids(items)
 
 @router.post("/items")
 async def create_item(item: Item):
